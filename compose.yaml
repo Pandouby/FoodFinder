@@ -1,0 +1,17 @@
+services:
+  mongodb:
+    image: mongo:8
+    container_name: foodfinder-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok' localhost:27017/test | grep 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  mongodb-data:

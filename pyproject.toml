@@ -1,0 +1,10 @@
+[project]
+name = "foodfinder"
+version = "0.1.0"
+description = "FoodFinder web application"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "flask>=3.1,<4",
+    "pymongo>=4.15,<5",
+]
