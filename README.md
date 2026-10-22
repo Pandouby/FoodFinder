@@ -15,6 +15,20 @@
 - Present Selection of Amenities
 - Calculate walking distance and route
 
+# Jour-Fixes
+
+## Jour-Fix 1
+
+### Done this Sprint
+- Setup GitHub Repo
+- Docker Container with MongoDB
+- Script for loading filtered Amenties in MongoDB
+
+### Goals
+- Implement Flask Backend DB connection (Phineas)
+- Implement frontend to display Heatmap of Ameneties (Valentin)
+
+
 # Scope
 
 ## Docker Container
@@ -24,6 +38,12 @@
 ### Host Frontend
 
 ## MongoDB Database
+
+Connect to db using
+
+``` bash
+mongosh "mongodb://localhost:27017"
+```
 
 ### Only ameneties we are interested in
 
