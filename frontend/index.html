@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FoodFinder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@600;700&family=Fira+Sans:wght@400;600&display=swap">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="map" class="map" role="application" aria-label="Map of Switzerland. Click to set the start point."></div>
+
+  <aside id="panel" class="panel" aria-labelledby="panel-title">
+    <header class="panel__header">
+      <h1 id="panel-title" class="panel__title">FoodFinder</h1>
+      <p class="panel__intro">Pick the places you want to visit, drop a start pin and get a walking tour from stop to stop.</p>
+    </header>
+
+    <form id="tour-form" class="form" novalidate>
+      <section class="field" aria-labelledby="stops-label">
+        <h2 id="stops-label" class="field__label">Stops</h2>
+        <div class="add-stop">
+          <select id="amenity-select" class="input" aria-label="Type of place"></select>
+          <button type="button" id="add-stop" class="button button--secondary">Add stop</button>
+        </div>
+        <ol id="stop-list" class="stop-list" aria-labelledby="stops-label"></ol>
+        <p id="stops-hint" class="hint"></p>
+      </section>
+
+      <section class="field" aria-labelledby="start-label">
+        <h2 id="start-label" class="field__label">Start</h2>
+        <p id="start-hint" class="hint">Click on the map where you want to start.</p>
+      </section>
+
+      <section class="field">
+        <label class="field__label" for="radius-number">Search radius</label>
+        <div class="radius">
+          <input type="range" id="radius-range" class="radius__range" aria-label="Search radius in metres">
+          <span class="radius__value">
+            <input type="number" id="radius-number" class="input radius__number" inputmode="numeric">
+            <span>m</span>
+          </span>
+        </div>
+      </section>
+
+      <button type="submit" id="find-tour" class="button button--primary" disabled>Find a tour</button>
+      <p id="form-error" class="error" role="alert" hidden></p>
+
+      <label class="toggle">
+        <input type="checkbox" id="heatmap-toggle">
+        <span>Show a heatmap of where these places are</span>
+      </label>
+    </form>
+
+    <section id="tour" class="tour" aria-labelledby="tour-title" aria-live="polite" hidden>
+      <h2 id="tour-title" class="tour__title">Your tour</h2>
+      <p id="tour-stale" class="tour__stale" hidden>Your settings changed. Find a tour again to update it.</p>
+      <ol id="signpost" class="signpost"></ol>
+      <p id="tour-total" class="tour__total"></p>
+      <p id="tour-source" class="hint"></p>
+      <button type="button" id="reroll" class="button button--secondary">Try other places</button>
+    </section>
+  </aside>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -13,5 +13,44 @@ services:
       timeout: 5s
       retries: 12
 
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: foodfinder-backend
+    restart: unless-stopped
+    environment:
+      MONGO_URI: mongodb://mongodb:27017
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    # Not published: nginx forwards /api to it, and macOS uses port 5000
+    # for AirPlay. Reach the API through http://localhost:8080/api.
+
+  frontend:
+    build: ./frontend
+    container_name: foodfinder-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+  # One-off import into the MongoDB container:
+  #   docker compose run --rm importer
+  importer:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    profiles: ["tools"]
+    working_dir: /srv
+    volumes:
+      - ./scripts:/srv/scripts:ro
+      - ./data:/srv/data:ro
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    command: ["python", "scripts/import_amenities.py", "--uri", "mongodb://mongodb:27017"]
+
 volumes:
   mongodb-data:

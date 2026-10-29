@@ -6,5 +6,15 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "flask>=3.1,<4",
+    "gunicorn>=23,<24",
     "pymongo>=4.15,<5",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8,<9",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["backend"]
+testpaths = ["backend/tests"]

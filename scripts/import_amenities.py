@@ -38,13 +38,37 @@ def load_amenities(path: Path) -> list[dict]:
     if not isinstance(nodes, list):
         raise ValueError("Expected the input JSON to contain a 'nodes' list")
 
-    return [
-        node
-        for node in nodes
-        if isinstance(node, dict)
-        and node.get("amenity") in ALLOWED_AMENITIES
-        and node.get("id")
-    ]
+    amenities = []
+    for node in nodes:
+        if (
+            not isinstance(node, dict)
+            or node.get("amenity") not in ALLOWED_AMENITIES
+            or not node.get("id")
+        ):
+            continue
+
+        location = to_geojson_point(node)
+        if location is None:
+            continue
+
+        amenities.append({**node, "location": location})
+    return amenities
+
+
+def to_geojson_point(node: dict) -> dict | None:
+    """Build a GeoJSON point from the string lat/lon of an OSM node.
+
+    MongoDB geo queries ($geoWithin, $geoNear) need [lon, lat] as numbers.
+    """
+    try:
+        lat = float(node["lat"])
+        lon = float(node["lon"])
+    except (KeyError, TypeError, ValueError):
+        return None
+
+    if not (-90 <= lat <= 90 and -180 <= lon <= 180):
+        return None
+    return {"type": "Point", "coordinates": [lon, lat]}
 
 
 def main() -> None:
@@ -55,6 +79,7 @@ def main() -> None:
         collection = client[args.database][args.collection]
         collection.create_index("id", unique=True)
         collection.create_index("amenity")
+        collection.create_index([("location", "2dsphere"), ("amenity", 1)])
 
         operations = [
             UpdateOne({"id": amenity["id"]}, {"$set": amenity}, upsert=True)
