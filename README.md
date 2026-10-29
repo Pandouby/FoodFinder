@@ -26,7 +26,8 @@
 
 ### Goals
 - Implement Flask Backend DB connection (Phineas)
-- Implement frontend to display Heatmap of Ameneties (Valentin)
+- API Call from Frontend to Backend to get DB Data (Silvan)
+- Implement LeafletJS frontend to display Heatmap of Ameneties (Valentin)
 
 
 # Scope
