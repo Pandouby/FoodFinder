@@ -1,19 +1,28 @@
 # FoodFinder
 
+# Issues
+- Not working on Silvans Machine
+  - Probably an issue with the loading of the data to the Mongodb
+  "The issue is a field name collision. Your script is trying to create a 2dsphere index on the location field, but one document already has location: "lakeside" as a plain string. MongoDB requires that field to be a GeoJSON object or coordinate array, so the index build fails."
+- Look into changing Public API call to OSRM to local hosted OSRM
+
+# Findings
+- Data in popup of the selected amenity are internal so from OSM
+- Heatmap calculates the heatmap for the selected amenities. If none are selected it just takes all amenities.
+- 
+
 # Minimum Working Solution
 
-- Select amenities
+- Select amenities and there order
 - Set pin on map
-- Get random sugestion
+- Select search radius
+- Get random sugestion for the selected amenities
 - Get waking time estimat
 
-# Story
-
-- Heatmap for POI
-- Selection of Amenities with order
-- Search for Amenities
-- Present Selection of Amenities
-- Calculate walking distance and route
+# Additional Features
+- Heatmap for amenities
+- Route calculation using OSRM
+- Chart for analysis of Data
 
 # Jour-Fixes
 
