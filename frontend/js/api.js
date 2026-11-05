@@ -5,8 +5,6 @@ function request(path, options = {}) {
 }
 
 export const api = {
-  health: () => request("/health"),
-
   heatmap: (amenities) => request("/amenities/heatmap", { data: { amenity: amenities.join(",") } }),
 
   tour: ({ start, radius, stops }) =>

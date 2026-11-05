@@ -83,5 +83,3 @@ const panel = document.getElementById("panel");
 new ResizeObserver(() => {
   document.documentElement.style.setProperty("--sheet-height", `${panel.offsetHeight}px`);
 }).observe(panel);
-
-api.health().fail((xhr) => widget.showError(errorMessage(xhr)));

@@ -63,30 +63,24 @@ def parse_limit(default: int = 500) -> int:
         raise ValidationError(f"'limit' must be between 1 and {MAX_LIMIT}")
     return limit
 
-
-@bp.get("/health")
-def health():
-    _repository().ping()
-    return jsonify(status="ok")
-
-
+# Returns the types of amenities + there count
 @bp.get("/amenities/types")
 def amenity_types():
     counts = _repository().count_by_type()
     return jsonify(types=[{"amenity": a, "count": c} for a, c in counts.items()])
 
-
+# Returns a list of all amenities
 @bp.get("/amenities")
 def amenities():
     results = _repository().find(parse_amenities(), parse_area(), parse_limit())
     return jsonify(count=len(results), amenities=results)
 
-
+# Returns the points of all amenities for the LeafletJS heatmap
 @bp.get("/amenities/heatmap")
 def heatmap():
     return jsonify(points=_repository().coordinates(parse_amenities(), parse_area()))
 
-
+# Returns the route of the provided amenities
 @bp.post("/tours")
 def tours():
     tour_request = TourRequest.from_json(request.get_json(silent=True))
