@@ -65,6 +65,18 @@ scripts/            Data import
 data/               OSM export
 ```
 
+## Start Project
+```bash
+docker compose down -v
+docker compose up -d --build
+docker compose run --rm importer
+```
+
+Can you make a chart using chartjs that displays the different ammenities in the selected search radius in a barchart. Display the chart in a modal like the option menu but in the right side of the screen.
+
+Then open:
+http://localhost:8080
+
 ## Docker Container
 
 Run the whole application (MongoDB, backend, frontend) with Docker Compose:
@@ -120,10 +132,10 @@ The importer reads `data/osm-output.json` by default and writes to the
 are upserted by their OSM `id`.
 
 Besides the original OSM fields (where `lat` and `lon` are strings), every
-document gets a GeoJSON field `location: {type: "Point", coordinates: [lon, lat]}`
-with a `2dsphere` index. The backend's geo queries need it, so **run the
-importer again** if your database was filled with an older version of the
-script.
+document gets a GeoJSON field `geo_location: {type: "Point", coordinates: [lon, lat]}`
+with a `2dsphere` index. The original OSM `location` tag is preserved. The
+backend's geo queries need `geo_location`, so **run the importer again** if
+your database was filled with an older version of the script.
 
 Stop MongoDB with:
 

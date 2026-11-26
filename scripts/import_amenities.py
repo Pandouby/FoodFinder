@@ -47,11 +47,14 @@ def load_amenities(path: Path) -> list[dict]:
         ):
             continue
 
-        location = to_geojson_point(node)
-        if location is None:
+        geo_location = to_geojson_point(node)
+        if geo_location is None:
             continue
 
-        amenities.append({**node, "location": location})
+        # Keep OSM's original free-form `location` tag untouched.  The
+        # generated GeoJSON point has its own field so it cannot collide with
+        # values such as "lakeside".
+        amenities.append({**node, "geo_location": geo_location})
     return amenities
 
 
@@ -79,7 +82,7 @@ def main() -> None:
         collection = client[args.database][args.collection]
         collection.create_index("id", unique=True)
         collection.create_index("amenity")
-        collection.create_index([("location", "2dsphere"), ("amenity", 1)])
+        collection.create_index([("geo_location", "2dsphere"), ("amenity", 1)])
 
         operations = [
             UpdateOne({"id": amenity["id"]}, {"$set": amenity}, upsert=True)

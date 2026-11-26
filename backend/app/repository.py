@@ -43,7 +43,7 @@ class Circle:
 
 def to_poi(doc: dict) -> dict:
     """Convert a MongoDB document into the shape returned by the API."""
-    lon, lat = doc["location"]["coordinates"]
+    lon, lat = doc["geo_location"]["coordinates"]
     details = {}
     for field in DETAIL_FIELDS:
         value = doc.get(field) or doc.get(FALLBACK_FIELDS.get(field, ""))
@@ -85,9 +85,9 @@ class AmenityRepository:
     def coordinates(self, amenities: list[str], area: Circle | None = None) -> list[list[float]]:
         """Return only [lat, lon] pairs, which keeps the heatmap payload small."""
         cursor = self._collection.find(
-            self._filter(amenities, area), {"_id": 0, "location.coordinates": 1}
+            self._filter(amenities, area), {"_id": 0, "geo_location.coordinates": 1}
         )
-        return [[lat, lon] for lon, lat in (doc["location"]["coordinates"] for doc in cursor)]
+        return [[lat, lon] for lon, lat in (doc["geo_location"]["coordinates"] for doc in cursor)]
 
     def random_sample(self, amenity: str, area: Circle, size: int) -> list[dict]:
         """Pick up to `size` distinct, named amenities of one type inside `area`."""
@@ -104,6 +104,6 @@ class AmenityRepository:
     def _filter(amenities: list[str], area: Circle | None) -> dict:
         query: dict = {
             "amenity": {"$in": amenities},
-            "location": area.to_query() if area else {"$exists": True},
+            "geo_location": area.to_query() if area else {"$exists": True},
         }
         return query
