@@ -144,6 +144,9 @@ export function createWidget(handlers) {
   $("#heatmap-toggle").on("change", function () {
     handlers.onHeatmapToggle(this.checked);
   });
+  const $chartToggle = $("#chart-toggle").on("change", function () {
+    handlers.onChartToggle(this.checked);
+  });
 
   // --- Tour result as a signpost -------------------------------------------
 
@@ -207,6 +210,11 @@ export function createWidget(handlers) {
 
     clearError() {
       $error.text("").prop("hidden", true);
+    },
+
+    // Called when the chart panel is closed from its own button or Escape.
+    uncheckChart() {
+      $chartToggle.prop("checked", false).trigger("focus");
     },
 
     markStale() {

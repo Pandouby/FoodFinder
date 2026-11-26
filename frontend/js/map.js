@@ -20,7 +20,7 @@ function stopIcon(stop) {
   });
 }
 
-export function createMap(elementId, { panel, onStartChange }) {
+export function createMap(elementId, { panel, chartPanel, onStartChange }) {
   const map = L.map(elementId, {
     zoomControl: false,
     minZoom: 7,
@@ -41,13 +41,21 @@ export function createMap(elementId, { panel, onStartChange }) {
   let heatLayer = null;
   let radius = 0;
 
-  // Keeps the map content clear of the floating panel.
+  // Keeps the map content clear of the floating panels.
   function viewPadding() {
     const $panel = $(panel);
+    const $chart = $(chartPanel);
+    const chartOpen = $chart.is(":visible");
     if (mobileLayout.matches) {
-      return { paddingTopLeft: [24, 24], paddingBottomRight: [24, $panel.outerHeight() + 24] };
+      return {
+        paddingTopLeft: [24, chartOpen ? $chart.outerHeight() + 24 : 24],
+        paddingBottomRight: [24, $panel.outerHeight() + 24],
+      };
     }
-    return { paddingTopLeft: [$panel.outerWidth() + 48, 24], paddingBottomRight: [24, 24] };
+    return {
+      paddingTopLeft: [$panel.outerWidth() + 48, 24],
+      paddingBottomRight: [chartOpen ? $chart.outerWidth() + 48 : 24, 24],
+    };
   }
 
   function fit(bounds) {

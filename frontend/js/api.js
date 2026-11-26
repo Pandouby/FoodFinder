@@ -7,6 +7,8 @@ function request(path, options = {}) {
 export const api = {
   heatmap: (amenities) => request("/amenities/heatmap", { data: { amenity: amenities.join(",") } }),
 
+  counts: ({ start, radius }) => request("/amenities/types", { data: { lat: start.lat, lon: start.lng, radius } }),
+
   tour: ({ start, radius, stops }) =>
     request("/tours", {
       method: "POST",

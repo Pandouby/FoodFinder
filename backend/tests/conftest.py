@@ -26,8 +26,9 @@ class FakeRepository:
     def ping(self):
         pass
 
-    def count_by_type(self):
-        return {a: sum(p["amenity"] == a for p in self.pois) for a in AMENITY_TYPES}
+    def count_by_type(self, area=None):
+        matching = list(self._matching(AMENITY_TYPES, area))
+        return {a: sum(p["amenity"] == a for p in matching) for a in AMENITY_TYPES}
 
     def _matching(self, amenities, area: Circle | None):
         for poi in self.pois:

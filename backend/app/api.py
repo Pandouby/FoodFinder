@@ -63,10 +63,11 @@ def parse_limit(default: int = 500) -> int:
         raise ValidationError(f"'limit' must be between 1 and {MAX_LIMIT}")
     return limit
 
-# Returns the types of amenities + there count
+# Returns the types of amenities + their count, optionally only within
+# ?lat=..&lon=..&radius=.. (used by the chart panel)
 @bp.get("/amenities/types")
 def amenity_types():
-    counts = _repository().count_by_type()
+    counts = _repository().count_by_type(parse_area())
     return jsonify(types=[{"amenity": a, "count": c} for a, c in counts.items()])
 
 # Returns a list of all amenities

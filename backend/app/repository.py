@@ -66,9 +66,13 @@ class AmenityRepository:
     def ping(self) -> None:
         self._collection.database.command("ping")
 
-    def count_by_type(self) -> dict[str, int]:
+    def count_by_type(self, area: Circle | None = None) -> dict[str, int]:
+        """Count each amenity type, optionally only inside `area`."""
+        match: dict = {"amenity": {"$in": list(AMENITY_TYPES)}}
+        if area:
+            match["geo_location"] = area.to_query()
         pipeline = [
-            {"$match": {"amenity": {"$in": list(AMENITY_TYPES)}}},
+            {"$match": match},
             {"$group": {"_id": "$amenity", "count": {"$sum": 1}}},
         ]
         counts = {row["_id"]: row["count"] for row in self._collection.aggregate(pipeline)}

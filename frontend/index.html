@@ -53,6 +53,11 @@
         <input type="checkbox" id="heatmap-toggle">
         <span>Show a heatmap of where these places are</span>
       </label>
+
+      <label class="toggle">
+        <input type="checkbox" id="chart-toggle" aria-controls="chart-panel">
+        <span>Show a chart of the places in the search radius</span>
+      </label>
     </form>
 
     <section id="tour" class="tour" aria-labelledby="tour-title" aria-live="polite" hidden>
@@ -65,11 +70,24 @@
     </section>
   </aside>
 
+  <aside id="chart-panel" class="panel panel--right chart-panel" aria-labelledby="chart-title" hidden>
+    <header class="chart-panel__header">
+      <h2 id="chart-title" class="chart-panel__title">Places nearby</h2>
+      <button type="button" id="chart-close" class="chart-panel__close" aria-label="Close chart">×</button>
+    </header>
+    <p id="chart-summary" class="chart-panel__summary"></p>
+    <div id="chart-plot" class="chart-panel__plot">
+      <canvas id="chart-canvas" role="img"></canvas>
+    </div>
+    <p id="chart-message" class="hint" hidden></p>
+  </aside>
+
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"></script>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>

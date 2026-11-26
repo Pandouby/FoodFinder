@@ -1,11 +1,23 @@
 import { AMENITIES } from "./config.js";
 import { api, errorMessage } from "./api.js";
+import { createChartPanel } from "./chart-panel.js";
 import { createMap } from "./map.js";
 import { createWidget } from "./widget.js";
 
-const state = { start: null, stops: [], radius: 0, heatmap: false };
+const state = { start: null, stops: [], radius: 0, heatmap: false, chart: false };
 const heatmapCache = new Map();
 let heatmapRequest = 0;
+let chartRequest = 0;
+let chartTimer = null;
+
+const chartPanel = createChartPanel({
+  onClose() {
+    state.chart = false;
+    chartPanel.close();
+    refreshChart();
+    widget.uncheckChart();
+  },
+});
 
 const widget = createWidget({
   onStopsChange(stops) {
@@ -17,10 +29,16 @@ const widget = createWidget({
     state.radius = radius;
     map.setRadius(radius);
     widget.markStale();
+    refreshChart();
   },
   onHeatmapToggle(enabled) {
     state.heatmap = enabled;
     refreshHeatmap();
+  },
+  onChartToggle(enabled) {
+    state.chart = enabled;
+    enabled ? chartPanel.open() : chartPanel.close();
+    refreshChart({ immediate: true });
   },
   onSubmit: findTour,
   onSignSelect: (position) => map.openStop(position),
@@ -29,10 +47,12 @@ const widget = createWidget({
 
 const map = createMap("map", {
   panel: "#panel",
+  chartPanel: "#chart-panel",
   onStartChange(latlng) {
     state.start = latlng;
     widget.setStart(latlng);
     widget.markStale();
+    refreshChart();
   },
 });
 
@@ -75,6 +95,34 @@ function refreshHeatmap() {
       if (request === heatmapRequest) map.setHeatmap(points);
     })
     .fail((xhr) => widget.showError(errorMessage(xhr)));
+}
+
+// Counts per type around the start pin. Waits a moment so dragging the
+// radius slider sends one request instead of one per step.
+function refreshChart({ immediate = false } = {}) {
+  clearTimeout(chartTimer);
+  const request = ++chartRequest;
+  if (!state.chart) return;
+  if (!state.start) {
+    chartPanel.showPrompt();
+    return;
+  }
+
+  chartTimer = setTimeout(() => {
+    const { start, radius } = state;
+    chartPanel.setLoading(true);
+    api
+      .counts({ start, radius })
+      .done(({ types }) => {
+        if (request === chartRequest) chartPanel.showCounts(types, radius);
+      })
+      .fail((xhr) => {
+        if (request === chartRequest) chartPanel.showError(errorMessage(xhr));
+      })
+      .always(() => {
+        if (request === chartRequest) chartPanel.setLoading(false);
+      });
+  }, immediate ? 0 : 250);
 }
 
 // On small screens the panel is a bottom sheet; keep Leaflet's attribution

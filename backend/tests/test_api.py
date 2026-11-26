@@ -17,6 +17,15 @@ def test_amenity_types(client):
     assert {"amenity": "restaurant", "count": 0} in types
 
 
+def test_amenity_types_within_area(client):
+    types = client.get("/api/amenities/types?lat=47.3779&lon=8.5403&radius=2000").get_json()["types"]
+    assert {t["amenity"]: t["count"] for t in types} == {"restaurant": 0, "cafe": 2, "bar": 3, "pub": 0}
+
+
+def test_amenity_types_requires_complete_area(client):
+    assert client.get("/api/amenities/types?lat=47.3&lon=8.5").status_code == 400
+
+
 def test_amenities_filter_by_type(client):
     data = client.get("/api/amenities?amenity=cafe,pub").get_json()
     assert data["count"] == 3

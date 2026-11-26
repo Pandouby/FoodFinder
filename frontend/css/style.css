@@ -18,6 +18,7 @@
   --font-sign: "Fira Sans Condensed", "Arial Narrow", sans-serif;
 
   --panel-width: 360px;
+  --chart-width: 320px;
   --gutter: 16px;
 }
 
@@ -552,6 +553,69 @@ button.sign__plate:focus-visible {
   }
 }
 
+/* --- Chart panel: places in the search radius, on the right ---------------- */
+
+.panel--right {
+  right: var(--gutter);
+  left: auto;
+  gap: 12px;
+  /* Shrinks on narrow desktops instead of running into the settings panel. */
+  width: min(var(--chart-width), calc(100vw - var(--panel-width) - 3 * var(--gutter)));
+}
+
+.chart-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.chart-panel__title {
+  margin: 0;
+  color: var(--ink);
+  font: 700 22px/1.1 var(--font-sign);
+}
+
+.chart-panel__close {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  margin-right: -6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.chart-panel__close:hover {
+  background: #E0E0E0;
+  color: var(--ink);
+}
+
+.chart-panel__summary {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.chart-panel__summary:empty {
+  display: none;
+}
+
+/* Chart.js needs a sized, positioned box when maintainAspectRatio is off. */
+.chart-panel__plot {
+  position: relative;
+  height: 152px;
+}
+
+/* Leaflet's zoom buttons move left of the open chart panel. */
+.leaflet-top.leaflet-right {
+  right: var(--chart-offset-x, 0px);
+}
+
 /* --- Small screens: the panel becomes a bottom sheet ----------------------- */
 
 @media (max-width: 640px) {
@@ -572,5 +636,34 @@ button.sign__plate:focus-visible {
 
   .leaflet-bottom {
     bottom: var(--sheet-height, 0px);
+  }
+
+  /* The chart panel becomes a compact sheet at the top. */
+  .panel--right {
+    top: 0;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: auto;
+    max-height: 40dvh;
+    gap: 8px;
+    padding: 10px 16px 12px;
+    border-radius: 0 0 12px 12px;
+  }
+
+  .chart-panel__title {
+    font-size: 19px;
+  }
+
+  .chart-panel__plot {
+    height: 120px;
+  }
+
+  .leaflet-top {
+    top: var(--chart-offset-y, 0px);
+  }
+
+  .leaflet-top.leaflet-right {
+    right: 0;
   }
 }
